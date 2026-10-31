@@ -333,3 +333,11 @@ func TestLanguage(t *testing.T) {
 		t.Fatal("cache shared between languages")
 	}
 }
+
+func TestInstanceIsRequired(t *testing.T) {
+	t.Setenv("JUSTMYTOOTS_INSTANCE", "")
+	t.Setenv("JUSTMYTOOTS_BASE_URL", "https://app.example.social")
+	if _, err := loadConfig(); err == nil || !strings.Contains(err.Error(), "JUSTMYTOOTS_INSTANCE") {
+		t.Fatalf("started without an instance: %v", err)
+	}
+}

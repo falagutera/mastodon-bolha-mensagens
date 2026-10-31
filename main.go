@@ -23,10 +23,10 @@ var assetFS embed.FS
 
 type config struct {
 	listen       string
-	baseURL      string // https://justmytoots.bolha.us
-	host         string // justmytoots.bolha.us
-	instance     string // https://bolha.us
-	domain       string // bolha.us
+	baseURL      string
+	host         string
+	instance     string
+	domain       string
 	clientID     string
 	clientSecret string
 	secret       []byte
@@ -44,7 +44,7 @@ func loadConfig() (config, error) {
 	c := config{
 		listen:       env("JUSTMYTOOTS_LISTEN", ":8080"),
 		baseURL:      strings.TrimRight(os.Getenv("JUSTMYTOOTS_BASE_URL"), "/"),
-		instance:     strings.TrimRight(env("JUSTMYTOOTS_INSTANCE", "https://bolha.us"), "/"),
+		instance:     strings.TrimRight(os.Getenv("JUSTMYTOOTS_INSTANCE"), "/"),
 		clientID:     os.Getenv("JUSTMYTOOTS_CLIENT_ID"),
 		clientSecret: os.Getenv("JUSTMYTOOTS_CLIENT_SECRET"),
 		secret:       []byte(os.Getenv("JUSTMYTOOTS_SECRET")),

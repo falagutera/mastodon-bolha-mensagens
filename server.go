@@ -23,6 +23,7 @@ const (
 	filterReplies filter = "replies"
 	filterMedia   filter = "media"
 	filterPublic  filter = "public"
+	filterPinned  filter = "pinned"
 )
 
 // Long enough to spare the instance, short enough that a deleted post or a
@@ -198,7 +199,7 @@ func (s *server) handleProfile(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/@"+url.PathEscape(user), http.StatusMovedPermanently) // links from the original site
 		return
 	}
-	if (maxID != "" && !idRe.MatchString(maxID)) || (f != filterPosts && f != filterReplies && f != filterMedia && f != filterPublic) {
+	if (maxID != "" && !idRe.MatchString(maxID)) || (f != filterPosts && f != filterReplies && f != filterMedia && f != filterPublic && f != filterPinned) {
 		s.fail(w, r, errBadHandle)
 		return
 	}
@@ -214,7 +215,7 @@ func (s *server) handleProfile(w http.ResponseWriter, r *http.Request) {
 	for _, t := range []struct {
 		f     filter
 		label string
-	}{{filterPosts, "tab_posts"}, {filterReplies, "tab_replies"}, {filterMedia, "tab_media"}, {filterPublic, "tab_public"}} {
+	}{{filterPosts, "tab_posts"}, {filterPinned, "tab_pinned"}, {filterReplies, "tab_replies"}, {filterMedia, "tab_media"}, {filterPublic, "tab_public"}} {
 		href := base
 		if t.f != filterPosts {
 			href += "?f=" + string(t.f)

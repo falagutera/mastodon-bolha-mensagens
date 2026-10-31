@@ -103,7 +103,9 @@ func (a *api) lookup(ctx context.Context, username string) (*account, error) {
 // posts returns one page of an account's posts, never boosts.
 func (a *api) posts(ctx context.Context, id string, f filter, maxID string) ([]status, error) {
 	q := url.Values{"exclude_reblogs": {"true"}, "limit": {strconv.Itoa(postsPerPage)}}
-	if f != filterReplies {
+	if f == filterPinned {
+		q.Set("pinned", "true")
+	} else if f != filterReplies {
 		q.Set("exclude_replies", "true")
 	}
 	if f == filterMedia {

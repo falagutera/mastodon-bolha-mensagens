@@ -208,6 +208,13 @@ func TestFilters(t *testing.T) {
 	if q := inst.query.Load().(string); !strings.Contains(q, "only_media=true") {
 		t.Fatalf("media: %s", q)
 	}
+	get(t, ts.URL+"/@guto?f=pinned")
+	if q := inst.query.Load().(string); !strings.Contains(q, "pinned=true") || strings.Contains(q, "exclude_replies") {
+		t.Fatalf("pinned: %s", q)
+	}
+	if _, body := get(t, ts.URL+"/@guto?f=pinned"); !strings.Contains(body, `href="/@guto?f=pinned" class="on"`) || !strings.Contains(body, ">Pinados<") {
+		t.Fatal("pinned tab")
+	}
 	if _, body := get(t, ts.URL+"/@guto?f=public"); strings.Contains(body, "só listado") {
 		t.Fatal("unlisted post on the public filter")
 	}

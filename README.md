@@ -30,7 +30,7 @@ You need Docker. There is no database.
 ## How it works
 
 - Pages are public, at `/@name`, but opt-in: one only exists while the account links to it from its bio or a profile field. Remove the link and the page goes away. The original `/@name@instance` links keep working.
-- Posts come from the instance's public API, as an anonymous visitor would see them, so private and followers-only posts never show up. Filters: replies, media only, public only.
+- Posts come from the instance's public API, as an anonymous visitor would see them, so private and followers-only posts never show up. Filters: pinned, replies, media only, public only.
 - The HTML of each post is sanitized again here, and the page has a strict CSP.
 - Answers are cached in memory for a minute, to spare the instance while keeping deleted posts from lingering.
 - Signing in is only for seeing your own page and link: OAuth with PKCE and the minimal `profile` scope. The token is used once to read the username, then revoked. The session is a signed cookie that lasts 4 hours.

@@ -18,24 +18,54 @@ You need Docker. There is no database.
      https://example.social/api/v1/apps
    ```
 
-2. Configure and start it:
+2. Create a folder with these two files. The image is ready to pull, so you don't need this repository.
 
-   ```sh
-   cp .env.example .env   # URLs, OAuth application and secret
-   docker compose up -d
+   `.env`:
+
+   ```ini
+   JUSTMYTOOTS_INSTANCE=https://example.social
+   JUSTMYTOOTS_BASE_URL=https://justmytoots.example.social
+   JUSTMYTOOTS_CLIENT_ID=the client_id from step 1
+   JUSTMYTOOTS_CLIENT_SECRET=the client_secret from step 1
+   JUSTMYTOOTS_SECRET=the output of: openssl rand -hex 32
    ```
 
-3. Point your reverse proxy at `127.0.0.1:8080`. It must serve HTTPS: the session cookie needs it.
+   `docker-compose.yml`:
 
-### Prebuilt image
+   ```yaml
+   services:
+     justmytoots:
+       image: registry.gutocarvalho.net/open/justmytoots:latest
+       container_name: justmytoots
+       restart: unless-stopped
+       env_file: .env
+       read_only: true
+       cap_drop: [ALL]
+       security_opt: ["no-new-privileges:true"]
+       mem_limit: 128m
+       ports:
+         - "127.0.0.1:8080:8080"
+   ```
 
-Every release is published, so you don't need to build it. In `docker-compose.yml`, replace the `build` and `image` lines with:
+3. Start it: `docker compose up -d`.
 
-```yaml
-image: registry.gutocarvalho.net/open/justmytoots:latest
-```
+4. Point your reverse proxy at `127.0.0.1:8080`. It must serve HTTPS: the session cookie needs it.
 
-For a fixed version, use a tag such as `0.1.4-797`.
+To update: `docker compose pull && docker compose up -d`. For a fixed version, swap `latest` for a tag such as `0.1.4-797`.
+
+To build it yourself instead, clone this repository, copy `.env.example` to `.env` and run `docker compose up -d --build`.
+
+### Settings
+
+| Variable | Required | Default | What it is |
+|---|---|---|---|
+| `JUSTMYTOOTS_INSTANCE` | yes |  | Your instance. Only its accounts have a page. |
+| `JUSTMYTOOTS_BASE_URL` | yes |  | Where this app is served, always https. |
+| `JUSTMYTOOTS_CLIENT_ID` | yes |  | OAuth application. |
+| `JUSTMYTOOTS_CLIENT_SECRET` | yes |  | OAuth application. |
+| `JUSTMYTOOTS_SECRET` | yes |  | Signs the session cookie. |
+| `JUSTMYTOOTS_LANG` | no | `en` | `en` or `pt`, when the browser asks for neither. |
+| `JUSTMYTOOTS_LISTEN` | no | `:8080` | Address inside the container. |
 
 ## How it works
 

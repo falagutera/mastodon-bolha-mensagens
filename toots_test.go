@@ -222,7 +222,7 @@ func TestNoLinkNoPage(t *testing.T) {
 	_, ts, inst := testServer(t)
 	inst.linked.Store(false)
 	resp, body := get(t, ts.URL+"/@guto")
-	if resp.StatusCode != 404 || !strings.Contains(body, "não ativou") || strings.Contains(body, "olá") {
+	if resp.StatusCode != 404 || !strings.Contains(body, "não ativou") || strings.Contains(body, "olá") || strings.Contains(body, "%!") {
 		t.Fatalf("%d", resp.StatusCode)
 	}
 	if inst.query.Load() != nil {
@@ -301,6 +301,25 @@ func TestLoginShowsOwnPage(t *testing.T) {
 	expired, _ := s.seal("session", session{Account: "guto", Expires: time.Now().Add(-time.Minute)})
 	if _, body := get(t, ts.URL+"/", &http.Cookie{Name: sessionCookie, Value: expired}); !strings.Contains(body, "/login") {
 		t.Fatal("expired session accepted")
+	}
+}
+
+func TestErrorMessagesAreClean(t *testing.T) {
+	_, ts, _ := testServer(t)
+	for _, lang := range []string{"pt", "en"} {
+		c := &http.Cookie{Name: langCookie, Value: lang}
+		for _, u := range []string{"/@nobody", "/guto", "/@a@other.social", "/@guto?f=bad", "/auth/callback"} {
+			if _, body := get(t, ts.URL+u, c); strings.Contains(body, "%!") || strings.Contains(body, "%s") {
+				t.Errorf("%s %s: broken message", lang, u)
+			}
+		}
+	}
+	for lang, tr := range translations {
+		for k, v := range tr {
+			if strings.HasPrefix(k, "error_") && strings.Contains(v, "%") && !strings.Contains(v, "%s") {
+				t.Errorf("%s %s: stray %%", lang, k)
+			}
+		}
 	}
 }
 

@@ -152,7 +152,7 @@ func (s *server) render(w http.ResponseWriter, status int, name string, data pag
 
 func (s *server) renderError(w http.ResponseWriter, r *http.Request, status int, key string) {
 	d := s.page(r)
-	d.Message = fmt.Sprintf(d.T["error_"+key], s.cfg.domain)
+	d.Message = strings.ReplaceAll(d.T["error_"+key], "%s", s.cfg.domain)
 	s.render(w, status, "index.html", d)
 }
 

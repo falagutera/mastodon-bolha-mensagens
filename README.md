@@ -27,6 +27,16 @@ You need Docker. There is no database.
 
 3. Point your reverse proxy at `127.0.0.1:8080`. It must serve HTTPS: the session cookie needs it.
 
+### Prebuilt image
+
+Every release is published, so you don't need to build it. In `docker-compose.yml`, replace the `build` and `image` lines with:
+
+```yaml
+image: registry.gutocarvalho.net/open/justmytoots:latest
+```
+
+For a fixed version, use a tag such as `0.1.4-797`.
+
 ## How it works
 
 - Pages are public, at `/@name`, but opt-in: one only exists while the account links to it from its bio or a profile field. Remove the link and the page goes away. The original `/@name@instance` links keep working.

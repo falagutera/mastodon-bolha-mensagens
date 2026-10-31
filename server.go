@@ -31,6 +31,7 @@ const (
 const (
 	cacheTTL   = time.Minute
 	cacheLimit = 512
+	cacheBytes = 32 << 20
 )
 
 var (
@@ -57,6 +58,7 @@ type cached struct {
 	at   time.Time
 	page *listing
 	err  error
+	size int
 }
 
 type server struct {
@@ -67,6 +69,7 @@ type server struct {
 
 	mu    sync.Mutex
 	cache map[string]cached
+	bytes int
 }
 
 func newServer(cfg config, tmpl *template.Template, client *http.Client) *server {
@@ -239,13 +242,39 @@ func (s *server) listing(ctx context.Context, user string, f filter, maxID strin
 	if errors.Is(err, context.Canceled) {
 		return nil, err
 	}
-	s.mu.Lock()
-	if len(s.cache) >= cacheLimit {
-		clear(s.cache)
-	}
-	s.cache[key] = cached{at: time.Now(), page: page, err: err}
-	s.mu.Unlock()
+	s.remember(key, page, err)
 	return page, err
+}
+
+func (s *server) remember(key string, page *listing, err error) {
+	size := page.size()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if len(s.cache) >= cacheLimit || s.bytes+size > cacheBytes {
+		clear(s.cache)
+		s.bytes = 0
+	}
+	s.bytes += size - s.cache[key].size
+	s.cache[key] = cached{at: time.Now(), page: page, err: err, size: size}
+}
+
+// size estimates the memory a listing holds, which the instance's limits on post
+// length don't bound: a page can carry dozens of media descriptions and emoji.
+func (l *listing) size() int {
+	if l == nil {
+		return 256
+	}
+	n := 1024 + len(l.Account.Note) + len(l.Name) + len(l.Next)
+	for _, f := range l.Account.Fields {
+		n += len(f.Value)
+	}
+	for _, p := range l.Posts {
+		n += 256 + len(p.URL) + len(p.Warning) + len(p.Body)
+		for _, m := range p.Pictures {
+			n += len(m.Src) + len(m.Alt) + len(m.Link)
+		}
+	}
+	return n
 }
 
 func (s *server) fetch(ctx context.Context, user string, f filter, maxID string, t map[string]string) (*listing, error) {

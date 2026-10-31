@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -346,5 +347,22 @@ func TestInstanceIsRequired(t *testing.T) {
 	t.Setenv("JUSTMYTOOTS_BASE_URL", "https://app.example.social")
 	if _, err := loadConfig(); err == nil || !strings.Contains(err.Error(), "JUSTMYTOOTS_INSTANCE") {
 		t.Fatalf("started without an instance: %v", err)
+	}
+}
+
+func TestCacheIsBoundedByBytes(t *testing.T) {
+	s := &server{cache: map[string]cached{}}
+	huge := strings.Repeat("x", cacheBytes/4)
+	for i := range 20 {
+		s.remember(strconv.Itoa(i), &listing{Account: &account{Note: huge}}, nil)
+		if s.bytes > cacheBytes {
+			t.Fatalf("cache holds %d bytes", s.bytes)
+		}
+	}
+	s.remember("same", nil, errNoAccount)
+	before := s.bytes
+	s.remember("same", nil, errNoAccount)
+	if s.bytes != before {
+		t.Fatalf("replacing an entry changed the total: %d to %d", before, s.bytes)
 	}
 }

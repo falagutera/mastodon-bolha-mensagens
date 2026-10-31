@@ -1,0 +1,25 @@
+{{template "head" .}}
+<header class="who">
+  <img src="{{.List.Account.Avatar}}" width="76" height="76" alt="">
+  <div>
+    <h1>{{.List.Name}}</h1>
+    <p>@{{.List.Account.Username}}@{{.Domain}} · {{.List.Account.Posts}} {{.T.posts_word}}</p>
+  </div>
+</header>
+<nav class="filters">{{range .Tabs}}<a href="{{.Href}}"{{if .On}} class="on" aria-current="page"{{end}}>{{.Label}}</a>{{end}}</nav>
+<main>
+{{$t := .T}}{{$d := .Domain}}
+{{range .List.Posts}}<article class="toot">
+  <time datetime="{{.Stamp}}">{{.Date}}</time>
+  {{if .Warning}}<details><summary>{{.Warning}}</summary>
+    <div class="body">{{.Body}}</div>{{template "pictures" .}}
+  </details>{{else}}
+  <div class="body">{{.Body}}</div>
+  {{if .Hidden}}{{if .Pictures}}<details><summary>{{$t.sensitive}}</summary>{{template "pictures" .}}</details>{{end}}{{else}}{{template "pictures" .}}{{end}}
+  {{end}}
+  <div class="meta">{{range .Counters}}<span>{{.Label}}</span>{{end}}<a href="{{.URL}}" rel="noopener">{{printf $t.open $d}}</a></div>
+</article>
+{{else}}<p class="none">{{.T.empty}}</p>{{end}}
+{{if .List.Next}}<p class="more"><a class="button" href="{{.List.Next}}">{{.T.older}}</a></p>{{end}}
+</main>
+{{template "foot" .}}

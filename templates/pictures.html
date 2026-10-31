@@ -1,0 +1,1 @@
+{{define "pictures"}}{{if .Pictures}}<div class="media n{{len .Pictures}}">{{range .Pictures}}<a href="{{.Link}}" rel="noopener"><img src="{{.Src}}" alt="{{.Alt}}" loading="lazy"></a>{{end}}</div>{{end}}{{end}}

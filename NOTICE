@@ -1,0 +1,5 @@
+justmytoots is a rewrite in Go of JustMyToots (https://github.com/cookiemumbles/justmytoots.com),
+by cookiemumbles, licensed under the Apache License 2.0. This rewrite is licensed under the
+GNU AGPL 3.0, see LICENSE.
+
+Fonts are IBM Plex, licensed under the SIL Open Font License 1.1 (assets/fonts/OFL.txt).

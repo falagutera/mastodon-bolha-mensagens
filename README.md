@@ -51,9 +51,15 @@ You need Docker. There is no database.
 
 4. Point your reverse proxy at `127.0.0.1:8080`. It must serve HTTPS: the session cookie needs it.
 
-To update: `docker compose pull && docker compose up -d`. For a fixed version, swap `latest` for a tag such as `0.1.4-797`.
+To update: `docker compose pull && docker compose up -d`. For a fixed version, swap `latest` for a tag such as `0.1.5-850`.
 
 To build it yourself instead, clone this repository, copy `.env.example` to `.env` and run `docker compose up -d --build`.
+
+### Versions
+
+Images are tagged `<version>-<build>`, such as `0.1.5-850`. The version is set in `.gitlab-ci.yml` and the build is the GitLab pipeline number. These tags never move, and `latest` follows the newest build.
+
+The page footer shows the same value, so you can compare what is live with the [container registry](https://gitlab.gutocarvalho.net/open/justmytoots/container_registry). A local build shows `dev`.
 
 ### Settings
 

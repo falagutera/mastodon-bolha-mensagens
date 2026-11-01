@@ -35,7 +35,7 @@ You need Docker. There is no database.
    ```yaml
    services:
      justmytoots:
-       image: registry.gutocarvalho.net/open/justmytoots:latest
+       image: registry.gutocarvalho.net/images/justmytoots:latest
        container_name: justmytoots
        restart: unless-stopped
        env_file: .env

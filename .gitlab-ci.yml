@@ -1,4 +1,4 @@
-# Builds the image and publishes it to this project's container registry.
+# Builds the image and publishes it to the images group (registry.gutocarvalho.net/images/justmytoots).
 # Runs on the bolha dind runners (bravo-open-*, untagged jobs).
 # The version is in the VERSION file. Tags: X.Y.Z-BUILD (immutable, pin this one in k8s), X.Y.Z and latest.
 stages: [test, build]
@@ -20,12 +20,12 @@ build:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - echo "$IMAGES_REGISTRY_PASSWORD" | docker login -u "$IMAGES_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - V="$(cat VERSION)"
-    - docker build --pull -q --build-arg "BUILD=$CI_PIPELINE_ID" -t "$CI_REGISTRY_IMAGE:$V-$CI_PIPELINE_ID" .
-    - for t in "$V" latest; do docker tag "$CI_REGISTRY_IMAGE:$V-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:$t"; done
-    - for t in "$V-$CI_PIPELINE_ID" "$V" latest; do docker push -q "$CI_REGISTRY_IMAGE:$t"; done
-    - echo "published $CI_REGISTRY_IMAGE:$V-$CI_PIPELINE_ID"
+    - docker build --pull -q --build-arg "BUILD=$CI_PIPELINE_ID" -t "registry.gutocarvalho.net/images/justmytoots:$V-$CI_PIPELINE_ID" .
+    - for t in "$V" latest; do docker tag "registry.gutocarvalho.net/images/justmytoots:$V-$CI_PIPELINE_ID" "registry.gutocarvalho.net/images/justmytoots:$t"; done
+    - for t in "$V-$CI_PIPELINE_ID" "$V" latest; do docker push -q "registry.gutocarvalho.net/images/justmytoots:$t"; done
+    - echo "published registry.gutocarvalho.net/images/justmytoots:$V-$CI_PIPELINE_ID"
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

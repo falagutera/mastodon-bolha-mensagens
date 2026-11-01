@@ -69,6 +69,9 @@ func loadConfig() (config, error) {
 	return c, nil
 }
 
+// version is set at build time, see the Dockerfile.
+var version = "dev"
+
 func main() {
 	healthcheck := flag.Bool("healthcheck", false, "probe the local server and exit")
 	flag.Parse()

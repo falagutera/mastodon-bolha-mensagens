@@ -44,3 +44,4 @@ details[open] summary { margin-bottom: 12px; }
 .more { padding-top: 26px; }
 .none { padding-top: 26px; color: var(--muted); }
 .foot { display: flex; flex-direction: row; flex-wrap: wrap; gap: 18px; border-top: 0; padding-top: 28px; font-size: 0.9rem; }
+.version { color: var(--muted); }

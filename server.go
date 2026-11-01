@@ -127,6 +127,7 @@ type listing struct {
 }
 
 type pageData struct {
+	Version  string
 	T        map[string]string
 	Domain   string
 	Message  string
@@ -139,7 +140,7 @@ type pageData struct {
 }
 
 func (s *server) page(r *http.Request) pageData {
-	return pageData{T: strs(language(r, s.cfg.lang)), Domain: s.cfg.domain}
+	return pageData{Version: version, T: strs(language(r, s.cfg.lang)), Domain: s.cfg.domain}
 }
 
 func (s *server) render(w http.ResponseWriter, status int, name string, data pageData) {

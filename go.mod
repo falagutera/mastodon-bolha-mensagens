@@ -1,4 +1,4 @@
-module gitlab.gutocarvalho.net/open/justmytoots
+module gitlab.gutocarvalho.net/open/bolha/justmytoots
 
 go 1.26.0
 

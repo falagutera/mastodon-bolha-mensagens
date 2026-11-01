@@ -1,10 +1,7 @@
 # Builds the image and publishes it to this project's container registry.
 # Runs on the bolha dind runners (bravo-open-*, untagged jobs).
-# Tags: <version>-<pipeline id> (immutable, pin this one in k8s) and latest.
+# The version is in the VERSION file. Tags: X.Y.Z-BUILD (immutable, pin this one in k8s), X.Y.Z and latest.
 stages: [test, build]
-
-variables:
-  JUSTMYTOOTS_VERSION: "0.1.5"
 
 test:
   stage: test
@@ -25,10 +22,10 @@ build:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
-    - docker build --pull -q --build-arg "VERSION=$JUSTMYTOOTS_VERSION-$CI_PIPELINE_ID" -t "$CI_REGISTRY_IMAGE:$JUSTMYTOOTS_VERSION-$CI_PIPELINE_ID" .
-    - docker tag "$CI_REGISTRY_IMAGE:$JUSTMYTOOTS_VERSION-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:latest"
-    - docker push -q "$CI_REGISTRY_IMAGE:$JUSTMYTOOTS_VERSION-$CI_PIPELINE_ID"
-    - docker push -q "$CI_REGISTRY_IMAGE:latest"
-    - echo "published $CI_REGISTRY_IMAGE:$JUSTMYTOOTS_VERSION-$CI_PIPELINE_ID"
+    - V="$(cat VERSION)"
+    - docker build --pull -q --build-arg "BUILD=$CI_PIPELINE_ID" -t "$CI_REGISTRY_IMAGE:$V-$CI_PIPELINE_ID" .
+    - for t in "$V" latest; do docker tag "$CI_REGISTRY_IMAGE:$V-$CI_PIPELINE_ID" "$CI_REGISTRY_IMAGE:$t"; done
+    - for t in "$V-$CI_PIPELINE_ID" "$V" latest; do docker push -q "$CI_REGISTRY_IMAGE:$t"; done
+    - echo "published $CI_REGISTRY_IMAGE:$V-$CI_PIPELINE_ID"
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

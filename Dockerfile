@@ -6,8 +6,8 @@ RUN go mod download
 COPY *.go ./
 COPY templates ./templates
 COPY assets ./assets
-ARG VERSION=dev
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /justmytoots .
+ARG BUILD=dev
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.build=${BUILD}" -o /justmytoots .
 
 # --- runtime -----------------------------------------------------------------
 # distroless static: no shell, ca-certs + a nonroot user, tiny.

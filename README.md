@@ -57,7 +57,7 @@ To build it yourself instead, clone this repository, copy `.env.example` to `.en
 
 ### Versions
 
-Versions look like `X.Y.Z-BUILD`. `X.Y.Z` is in the `VERSION` file and follows SemVer, and `BUILD` is the GitLab pipeline number. A local build shows `X.Y.Z-dev`. The page footer shows the version and links to the [container registry](https://gitlab.gutocarvalho.net/open/bolha/justmytoots/container_registry).
+Versions look like `X.Y.Z-BUILD`. `X.Y.Z` is in the `VERSION` file and follows SemVer, and `BUILD` is the GitLab pipeline number. A local build shows `X.Y.Z-dev`. The page footer shows the version and links to the [container registry](https://gitlab.gutocarvalho.net/images/justmytoots/container_registry).
 
 | Image tag | Moves? |
 |---|---|

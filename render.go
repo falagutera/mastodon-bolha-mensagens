@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/microcosm-cc/bluemonday"
+	xhtml "golang.org/x/net/html"
 )
 
 // The instance already sanitizes posts. This second pass means a bug there or a
@@ -34,14 +35,54 @@ var (
 // sanitize cleans a post's HTML and turns custom emoji shortcodes into images.
 func sanitize(content string, emojis []emoji) template.HTML {
 	clean := postPolicy.Sanitize(content)
+	repl := make(map[string]string, len(emojis))
 	for _, e := range emojis {
 		if !shortcodeRe.MatchString(e.Shortcode) || !strings.HasPrefix(e.URL, "https://") {
 			continue
 		}
-		tag := `<img class="emoji" src="` + html.EscapeString(e.URL) + `" alt=":` + e.Shortcode + `:" width="20" height="20">`
-		clean = strings.ReplaceAll(clean, ":"+e.Shortcode+":", tag)
+		repl[e.Shortcode] = `<img class="emoji" src="` + html.EscapeString(e.URL) + `" alt=":` + e.Shortcode + `:" width="20" height="20">`
 	}
-	return template.HTML(clean) // sanitized above
+	return template.HTML(replaceEmoji(clean, repl)) // sanitized above
+}
+
+// replaceEmoji swaps :shortcode: for its <img> tag, but only inside text nodes
+// of the already-sanitized HTML. Replacing on the raw string let a shortcode in
+// an attribute value (e.g. a link href) break out of the quotes and corrupt the
+// markup, so the substitution is now tokenizer-aware.
+func replaceEmoji(h string, repl map[string]string) string {
+	if len(repl) == 0 {
+		return h
+	}
+	z := xhtml.NewTokenizer(strings.NewReader(h))
+	var b strings.Builder
+	for {
+		switch z.Next() {
+		case xhtml.ErrorToken:
+			return b.String()
+		case xhtml.TextToken:
+			b.WriteString(substituteEmoji(string(z.Text()), repl))
+		default:
+			b.Write(z.Raw())
+		}
+	}
+}
+
+// substituteEmoji replaces every known :shortcode: in a plain-text run with its
+// image tag, HTML-escaping the surrounding text and leaving unknown codes as-is.
+func substituteEmoji(text string, repl map[string]string) string {
+	var b strings.Builder
+	last := 0
+	for _, m := range emojiNameRe.FindAllStringIndex(text, -1) {
+		tag, ok := repl[text[m[0]+1:m[1]-1]]
+		if !ok {
+			continue
+		}
+		b.WriteString(html.EscapeString(text[last:m[0]]))
+		b.WriteString(tag)
+		last = m[1]
+	}
+	b.WriteString(html.EscapeString(text[last:]))
+	return b.String()
 }
 
 // displayName drops custom emoji shortcodes, which are not worth an image here.

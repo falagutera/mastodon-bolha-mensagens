@@ -12,9 +12,12 @@
 <div class="page">
 <div class="topbar">
   <a class="eyebrow home" href="/">{{.T.brand}} · {{.Domain}}</a>
+  <span class="toplinks">
+  <a class="notes-link{{if .Notes}} on{{end}}" href="/release-notes"{{if .Notes}} aria-current="page"{{end}}>{{.T.nav_notes}}</a>
   <span class="langsel" role="group" aria-label="{{.T.language}}">
     <a href="/?lang=pt" hreflang="pt-BR"{{if eq .T.lang "pt-BR"}} class="on" aria-current="true"{{end}}>PT</a>
     <a href="/?lang=en" hreflang="en"{{if eq .T.lang "en"}} class="on" aria-current="true"{{end}}>EN</a>
+  </span>
   </span>
 </div>
 {{end}}

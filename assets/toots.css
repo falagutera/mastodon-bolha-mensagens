@@ -45,3 +45,15 @@ details[open] summary { margin-bottom: 12px; }
 .none { padding-top: 26px; color: var(--muted); }
 .foot { display: flex; flex-direction: row; flex-wrap: wrap; gap: 18px; border-top: 0; padding-top: 28px; font-size: 0.9rem; }
 .version { color: var(--muted); }
+
+/* release notes (shared relnotes markup) */
+.toplinks { display: flex; align-items: center; gap: 14px; }
+.notes-link { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); text-decoration: none; }
+.notes-link:hover, .notes-link.on { color: var(--ink); text-decoration: underline; }
+.relnotes .release { margin: 1.4rem 0; padding-top: .8rem; border-top: 1px solid var(--line); }
+.relnotes h2 { margin: 0 0 .3rem; font-size: 1.15rem; }
+.relnotes .when { color: var(--muted); font-weight: 400; font-size: .85rem; }
+.relnotes h3 { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: .8rem 0 .2rem; }
+.relnotes .summary { margin: .2rem 0 .4rem; }
+.relnotes ul { margin: .3rem 0 .6rem; padding-left: 1.2rem; text-align: left; }
+.relnotes li { margin: .25rem 0; }

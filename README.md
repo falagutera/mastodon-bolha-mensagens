@@ -59,6 +59,8 @@ To build it yourself instead, clone this repository, copy `.env.example` to `.en
 
 Versions look like `X.Y.Z-BUILD`. `X.Y.Z` is in the `VERSION` file and follows SemVer, and `BUILD` is the GitLab pipeline number. A local build shows `X.Y.Z-dev`. The page footer shows the version and links to the [container registry](https://gitlab.gutocarvalho.net/images/justmytoots/container_registry).
 
+What changed in each version is in [CHANGELOG.md](CHANGELOG.md), which the app also serves as its release notes page (`/release-notes`, linked at the top of the page) and as `/release-notes.json`. Add an entry when you bump `VERSION`: a test fails without it.
+
 | Image tag | Moves? |
 |---|---|
 | `X.Y.Z-BUILD` | Never. Pin this one in production. |

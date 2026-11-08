@@ -1,23 +1,24 @@
 {{template "head" .}}
-<header class="intro">
-  <h1>{{.T.title}}</h1>
+<section class="hero">
+  <p class="kicker">{{.T.kicker}}</p>
+  <h1>{{.T.hero_a}} <em>{{.T.hero_b}}</em></h1>
   <p class="lede">{{printf .T.lede .Domain}}</p>
-</header>
-<main class="home-main">
+  {{if not .LoggedIn}}<p><a class="btn" href="/login">{{.T.login_button}}</a></p>{{end}}
+</section>
+<main>
   {{if .Message}}<p class="error" role="alert">{{.Message}}</p>{{end}}
   {{if .LoggedIn}}
-  <section class="stack">
-    <h2>{{.T.me_title}}</h2>
+  <div class="cat"><h2>{{.T.me_title}}</h2><div class="rule"></div></div>
+  <section class="card stack">
     {{if .Active}}<p>{{.T.me_active}}</p>
-    <p><a class="button" href="/@{{.Username}}">{{.T.me_open}}</a></p>
+    <p><a class="btn" href="/@{{.Username}}">{{.T.me_open}}</a></p>
     {{else}}<p>{{.T.me_inactive}}</p>{{end}}
     <p><code>{{.PageURL}}</code></p>
     <form method="post" action="/logout"><button class="plain" type="submit">{{.T.logout}}</button></form>
   </section>
   {{else}}
-  <p><a class="button" href="/login">{{.T.login_button}}</a></p>
-  <section class="stack">
-    <h2>{{.T.how_title}}</h2>
+  <div class="cat"><h2>{{.T.how_title}}</h2><div class="rule"></div></div>
+  <section class="card stack">
     <ul class="how"><li>{{.T.how_1}}</li><li>{{.T.how_2}}</li><li>{{.T.how_3}}</li></ul>
   </section>
   {{end}}

@@ -34,7 +34,7 @@ OAuth app (README, Install); `JUSTMYTOOTS_BASE_URL` must be the address in the p
 | `auth.go` | OAuth (state + PKCE), signed cookies (`seal`/`open`), token revoke |
 | `i18n.go` | every text, in `en` and `pt`, month names and date format |
 | `templates/` | `layout.html` (head/foot), `index.html`, `profile.html`, `pictures.html`, `notes.html` |
-| `assets/` | `toots.css` (the app's own CSS) and web fonts; `artefatos.css` is the shared design stylesheet of our sites (don't edit it here) |
+| `assets/` | `style.css` (the look, a copy from open/gcn/ui: never edit it here) and `toots.css` (the app's own CSS, using the ui tokens) |
 | `internal/relnotes` | copy of the shared release-notes package (synced from its own repo, never edited here) |
 
 Tests: `toots_test.go` (`fakeInstance` answers like Mastodon for `guto`, whose bio links the page

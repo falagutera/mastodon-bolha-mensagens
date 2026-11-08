@@ -3,6 +3,10 @@
 All notable changes to justmytoots. Versions follow [SemVer](https://semver.org/); images are
 published as `registry.gutocarvalho.net/images/justmytoots:<version>-<build>`.
 
+## 0.2.0 — 2026-11-08
+
+- **The bolha.io look**, from `open/gcn/ui` (`assets/style.css`, a synced copy, and `VISUAL.md`), like numeros, atualiza, id and encaminha: light and dark from the system, system fonts, a header with the bubble, cards on the home page, the filters and buttons as pills, and the footer "version · source code · part of bolha.io · based on JustMyToots". The IBM Plex webfonts and the artefatos stylesheet are gone.
+
 ## 0.1.9 — 2026-11-07
 
 Hardening from the updated linters.

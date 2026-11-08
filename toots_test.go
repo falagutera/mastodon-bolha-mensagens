@@ -335,7 +335,7 @@ func TestErrorMessagesAreClean(t *testing.T) {
 func TestLanguage(t *testing.T) {
 	_, ts, _ := testServer(t)
 	en := &http.Cookie{Name: langCookie, Value: "en"}
-	if _, body := get(t, ts.URL+"/@guto", en); !strings.Contains(body, `<html lang="en">`) || !strings.Contains(body, "2 favourites") {
+	if _, body := get(t, ts.URL+"/@guto", en); !strings.Contains(body, `<html lang="en" data-family="bolha">`) || !strings.Contains(body, "2 favourites") {
 		t.Fatal("english page")
 	}
 	if _, body := get(t, ts.URL+"/@guto"); !strings.Contains(body, "2 favoritos") {

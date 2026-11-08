@@ -14,7 +14,10 @@ test:
     CGO_ENABLED: "0"
   script:
     - go vet ./...
-    - go test ./...
+    - test -z "$(gofmt -l .)"
+    - go test -p 1 ./...
+    - go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+    - "$(go env GOPATH)/bin/govulncheck ./..."
 
 build:
   stage: build

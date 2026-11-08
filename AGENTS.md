@@ -103,7 +103,7 @@ while `linked` is true; `testServer`, `get`), `emoji_test.go`, `i18n_test.go`, `
 
 ## Security checks
 
-CI runs `go vet`, the tests and the shared security stage: gitleaks, govulncheck, trivy, gosec,
+CI runs `go vet`, `gofmt -l`, the tests, govulncheck and the shared security stage: gitleaks, govulncheck, trivy, gosec,
 semgrep, poutine, hadolint, shellcheck, yamllint. Before a release that touches sanitizing, the
 opt-in check or sign-in, also review what a stranger could make the page show — the part scanners
 do not see.

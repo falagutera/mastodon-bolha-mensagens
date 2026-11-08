@@ -6,6 +6,61 @@ It shows a person's own posts, without boosts, timelines or the rest of the inte
 
 It's a rewrite in Go of [JustMyToots](https://github.com/cookiemumbles/justmytoots.com) by cookiemumbles, see `NOTICE`.
 
+## Testing and security
+
+justmytoots shows posts written by other people on a public page, so it is tested against what would hurt: a page for someone who didn't ask for one, a post that isn't public, and post HTML that could inject markup or script. What is done today (2026-11-08):
+
+**Every pipeline.** GitLab CI ([`.gitlab-ci.yml`](.gitlab-ci.yml), plus the shared security stage from `open/gcn/ci-templates`, file `security.yml`). The test job runs on every pipeline; the security stage runs on every merge request and every push to `main`; the image is built and published only from `main`.
+
+- Blocking (the pipeline fails and no image is published):
+  - `go vet`, a `gofmt` check, and the full test suite (no services needed: the tests use a fake instance);
+  - `govulncheck`: known vulnerabilities in Go code paths justmytoots actually reaches (in the test job and in the security stage);
+  - `gitleaks`: secrets committed to the repository;
+  - `trivy`: critical vulnerabilities that have a fix, secrets and misconfigurations in the repository.
+- Informative (reported, not blocking): `semgrep`, `gosec`, `hadolint` (Dockerfile), `yamllint`, and `poutine` (security of the CI pipeline itself).
+
+**The test suite.** 19 tests (`go test -list`), running the real HTTP handlers against a fake Mastodon instance. They cover:
+
+- opt-in: no profile link, no page (posts aren't even fetched), and look-alike hosts or names in the link don't count;
+- only what is public: posts are read without a token, boosts are left out, the filters send the right query, and an unknown filter or a malformed `max_id` is a 404 that never reaches the instance;
+- local accounts only: other domains and odd names are refused;
+- untrusted HTML: sanitizing, custom emoji that can't inject markup and are replaced only in text, never inside links;
+- sign-in shows only the person's own page;
+- the cache: one lookup per minute per page, bounded by size, separate per language;
+- both languages, clean error texts, required settings, and the release notes.
+
+**Reviews.** A [Strix](https://github.com/usestrix/strix) review found that a custom emoji shortcode inside a link could break out of the link's markup; fixed in 0.1.7 (emoji are now replaced only in text) with a regression test. In 0.1.9 the findings of the updated linters (`gosec`, `semgrep`, `hadolint`) were fixed. These are what we checked; they are not an outside audit and don't certify anything.
+
+**Reporting a vulnerability.** Write to contato@gutocarvalho.net. Please don't open a public issue for it.
+
+## Architecture
+
+**Why it exists.** A Mastodon profile mixes a person's own posts with boosts, replies and the rest of the interface. Some people want a plain page with just what they wrote (jokes, drawings, photos) to share or look back through. This one is run by the instance itself, serves only its accounts, and only those that ask for it.
+
+**In plain words.**
+
+1. a person adds a link to `justmytoots.example.social/@name` in their bio or a profile field;
+2. when someone opens that page, justmytoots looks up the account on the instance's public API and checks that the link is there; without it, there is no page;
+3. it reads the account's posts from the public API as an anonymous visitor, sanitizes their HTML again and shows them;
+4. signing in is optional and only shows a person whether their page is on and which link to add.
+
+**Components.**
+
+```
+          browser
+             |
+      justmytoots (this app, no JavaScript)
+             |                         media and avatars load in the browser
+             |                         straight from the instance (https)
+             v
+      the Mastodon instance (one only)
+        - public API, no token: account lookup and posts
+        - OAuth sign-in, scope "profile" (token revoked right away)
+```
+
+- Nothing is stored: no database and no disk. API answers are cached in memory for a minute (at most 512 pages and 32 MiB); the session is a signed cookie with just the username, valid for 4 hours.
+- Because posts are read without a token, followers-only and direct posts never come back.
+
 ## Install
 
 You need Docker. There is no database.

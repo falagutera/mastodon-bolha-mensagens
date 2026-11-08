@@ -93,4 +93,7 @@ What changed in each version is in [CHANGELOG.md](CHANGELOG.md), which the app a
 
     go test ./...
 
+Changing the code, with or without a coding agent: [`AGENTS.md`](AGENTS.md) has the commands,
+a map of the files and the rules a change must keep.
+
 AGPL-3.0, see `LICENSE` and `NOTICE`.

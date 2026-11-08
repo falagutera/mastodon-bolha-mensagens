@@ -179,6 +179,7 @@ func get(t *testing.T, url string, cookies ...*http.Cookie) (*http.Response, str
 func TestProfilePage(t *testing.T) {
 	_, ts, inst := testServer(t)
 	resp, body := get(t, ts.URL+"/@guto")
+	dump(t, "profile.html", body)
 	if resp.StatusCode != 200 {
 		t.Fatalf("profile: %d", resp.StatusCode)
 	}

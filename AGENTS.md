@@ -19,7 +19,7 @@ go test ./...         # everything runs against a fake instance (fakeInstance in
 ```
 
 There is no database and no test variable. To look at a rendered profile page:
-`mkdir -p /tmp/jmt-dump && JUSTMYTOOTS_DUMP=/tmp/jmt-dump go test -run TestProfilePage ./...`
+`D=$(mktemp -d) && JUSTMYTOOTS_DUMP=$D go test -run TestProfilePage ./... && echo $D`
 writes `profile.html` and `assets/` there. To run the app for real you need an instance and an
 OAuth app (README, Install); `JUSTMYTOOTS_BASE_URL` must be the address in the profile link.
 
@@ -34,6 +34,7 @@ OAuth app (README, Install); `JUSTMYTOOTS_BASE_URL` must be the address in the p
 | `auth.go` | OAuth (state + PKCE), signed cookies (`seal`/`open`), token revoke |
 | `i18n.go` | every text, in `en` and `pt`, month names and date format |
 | `templates/` | `layout.html` (head/foot), `index.html`, `profile.html`, `pictures.html`, `notes.html` |
+| `assets/` | `toots.css` (the app's own CSS) and web fonts; `artefatos.css` is the shared design stylesheet of our sites (don't edit it here) |
 | `internal/relnotes` | copy of the shared release-notes package (synced from its own repo, never edited here) |
 
 Tests: `toots_test.go` (`fakeInstance` answers like Mastodon for `guto`, whose bio links the page
@@ -80,15 +81,22 @@ while `linked` is true; `testServer`, `get`), `emoji_test.go`, `i18n_test.go`, `
    `newPost` and `templates/profile.html` (date, CW, pictures, replies/boosts/favourites).
 1. Filter: a constant, the allowlist check in `handleProfile`, the query in `api.posts`, a tab
    with a `tab_*` text. Detail: the field in `status`, then `post`, then the template; HTML from
-   the instance only through `sanitize`, URLs only if `https://`.
+   the instance only through `sanitize`, URLs only if `https://`; CSS for a new element in
+   `assets/toots.css`. Validate or parse any API field you branch on (timestamps, enums) and test
+   it with a junk value.
 2. Texts in both languages in `i18n.go`.
 3. A case in `TestFilters` (the query sent, and that a bad value is still a 404) or in
-   `TestProfilePage` (`fakeInstance` returns the data), plus what must not show.
+   `TestProfilePage` (the fake post list is an inline literal in `fakeInstance`'s `ServeHTTP`;
+   add the field there), plus what must not show.
 4. `gofmt`, `go vet`, `go test`, and look at the dump.
 
 ## Releasing
 
-- `VERSION` holds `X.Y.Z`; CI adds the build number (`X.Y.Z-BUILD`). Bump it for user-visible changes.
+- `VERSION` holds `X.Y.Z`; CI adds the build number (`X.Y.Z-BUILD`). Which part to bump: a fix or a
+  small visual tweak is a patch; a new feature, option or detail is a minor; a change that needs a
+  new grant or setting at install is a minor whose changelog entry starts with that step in **bold**;
+  a breaking change is a major; docs, tests or CI only need no bump. Work not released yet can sit
+  under `## Unreleased` in `CHANGELOG.md` (`internal/relnotes` skips that section).
 - Every version needs its `CHANGELOG.md` entry (`TestChangelogHasVersion`); it is also the public
   `/release-notes` page and `/release-notes.json`, so write it for the people who use the site.
 - Code, comments, commits and the README in English. Keep commits small with a message that says why.

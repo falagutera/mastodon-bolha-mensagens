@@ -21,7 +21,7 @@ go test ./...         # everything runs against a fake instance (fakeInstance in
 There is no database and no test variable. To look at a rendered profile page:
 `D=$(mktemp -d) && JUSTMYTOOTS_DUMP=$D go test -run TestProfilePage ./... && echo $D`
 writes `profile.html` and `assets/` there. To run the app for real you need an instance and an
-OAuth app (README, Install); `JUSTMYTOOTS_BASE_URL` must be the address in the profile link.
+OAuth app (README, Install); `JUSTMYTOOTS_BASE_URL` (or one of `JUSTMYTOOTS_LEGACY_HOSTS`) must be the address in the profile link.
 
 ## Map
 

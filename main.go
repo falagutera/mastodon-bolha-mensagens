@@ -25,6 +25,7 @@ type config struct {
 	listen       string
 	baseURL      string
 	host         string
+	hosts        []string // host plus legacy hosts accepted in profile links
 	instance     string
 	domain       string
 	clientID     string
@@ -60,6 +61,12 @@ func loadConfig() (config, error) {
 		return c, fmt.Errorf("JUSTMYTOOTS_BASE_URL must be a URL like https://justmytoots.example.social")
 	}
 	c.host = base.Host
+	c.hosts = []string{c.host}
+	for _, h := range strings.Split(os.Getenv("JUSTMYTOOTS_LEGACY_HOSTS"), ",") {
+		if h = strings.ToLower(strings.TrimSpace(h)); h != "" && h != c.host {
+			c.hosts = append(c.hosts, h)
+		}
+	}
 	switch {
 	case c.clientID == "" || c.clientSecret == "":
 		return c, fmt.Errorf("JUSTMYTOOTS_CLIENT_ID and JUSTMYTOOTS_CLIENT_SECRET are required")

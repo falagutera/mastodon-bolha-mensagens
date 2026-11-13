@@ -121,9 +121,14 @@ func (a *api) posts(ctx context.Context, id string, f filter, maxID string) ([]s
 
 // consented tells if the account links to its page here, on the bio or on a
 // profile field. A page only exists because its owner asked for it, and removing
-// the link takes it down. Both /@name and the original /@name@instance count.
-func consented(acc *account, host, domain string) bool {
-	re := regexp.MustCompile(`(?i)https?://(www\.)?` + regexp.QuoteMeta(host) + `/@?` + regexp.QuoteMeta(acc.Username) +
+// the link takes it down. Both /@name and the original /@name@instance count,
+// on the current host or on a legacy one (links made before a rename still work).
+func consented(acc *account, hosts []string, domain string) bool {
+	quoted := make([]string, len(hosts))
+	for i, h := range hosts {
+		quoted[i] = regexp.QuoteMeta(h)
+	}
+	re := regexp.MustCompile(`(?i)https?://(www\.)?(` + strings.Join(quoted, "|") + `)/@?` + regexp.QuoteMeta(acc.Username) +
 		`(@` + regexp.QuoteMeta(domain) + `)?([/?"<\s]|$)`)
 	if re.MatchString(acc.Note) {
 		return true

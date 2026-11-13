@@ -193,7 +193,7 @@ func (s *server) handleIndex(w http.ResponseWriter, r *http.Request) {
 		d.LoggedIn = true
 		d.Username = acc.Username
 		d.PageURL = s.cfg.baseURL + "/@" + acc.Username
-		d.Active = consented(acc, s.cfg.host, s.cfg.domain)
+		d.Active = consented(acc, s.cfg.hosts, s.cfg.domain)
 	}
 	s.render(w, http.StatusOK, "index.html", d)
 }
@@ -296,7 +296,7 @@ func (s *server) fetch(ctx context.Context, user string, f filter, maxID string,
 	if err != nil {
 		return nil, err
 	}
-	if !consented(acc, s.cfg.host, s.cfg.domain) {
+	if !consented(acc, s.cfg.hosts, s.cfg.domain) {
 		return nil, errNoConsent
 	}
 	statuses, err := s.api.posts(ctx, acc.ID, f, maxID)

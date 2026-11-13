@@ -33,33 +33,37 @@ func TestParseHandle(t *testing.T) {
 }
 
 func TestConsent(t *testing.T) {
-	const host, domain = "justmytoots.bolha.us", "bolha.us"
+	const domain = "bolha.us"
+	hosts := []string{"mensagens.bolha.us", "justmytoots.bolha.us"} // current, then legacy
 	link := func(u string) string { return `<a href="` + u + `" rel="me">x</a>` }
-	yes := []string{
-		"https://justmytoots.bolha.us/@guto", "https://justmytoots.bolha.us/guto", "https://justmytoots.bolha.us/@guto@bolha.us",
-		"https://justmytoots.bolha.us/@GUTO", "https://justmytoots.bolha.us/@guto?f=media", "https://justmytoots.bolha.us/@guto/",
+	var yes, no []string
+	for _, h := range hosts {
+		b := "https://" + h
+		yes = append(yes, b+"/@guto", b+"/guto", b+"/@guto@bolha.us", b+"/@GUTO", b+"/@guto?f=media", b+"/@guto/")
+		no = append(no, b+"/@guto2", b+"/@guto@other.social", b+"/@other",
+			"https://evil.example/"+h+"/@guto", b+".evil.example/@guto", b+"/@guto.bak")
 	}
-	no := []string{
-		"https://justmytoots.bolha.us/@guto2", "https://justmytoots.bolha.us/@guto@other.social", "https://justmytoots.bolha.us/@other",
-		"https://evil.example/justmytoots.bolha.us/@guto", "https://justmytoots.bolha.us.evil.example/@guto", "https://justmytoots.bolha.us/@guto.bak",
-	}
+	no = append(no, "https://other.bolha.us/@guto", "https://mensagensxbolha.us/@guto")
 	for _, u := range yes {
 		acc := &account{Username: "guto", Note: link(u)}
-		if !consented(acc, host, domain) {
+		if !consented(acc, hosts, domain) {
 			t.Errorf("bio link %q not accepted", u)
 		}
 	}
 	for _, u := range no {
 		acc := &account{Username: "guto", Note: link(u)}
-		if consented(acc, host, domain) {
+		if consented(acc, hosts, domain) {
 			t.Errorf("bio link %q accepted", u)
 		}
+	}
+	if consented(&account{Username: "guto", Note: link("https://justmytoots.bolha.us/@guto")}, hosts[:1], domain) {
+		t.Error("legacy host accepted without being configured")
 	}
 	acc := &account{Username: "guto"}
 	acc.Fields = append(acc.Fields, struct {
 		Value string `json:"value"`
 	}{link(yes[0])})
-	if !consented(acc, host, domain) {
+	if !consented(acc, hosts, domain) {
 		t.Error("profile field not accepted")
 	}
 }
@@ -150,7 +154,7 @@ func testServer(t *testing.T) (*server, *httptest.Server, *fakeInstance) {
 	inst.linked.Store(true)
 	is := httptest.NewServer(inst)
 	t.Cleanup(is.Close)
-	cfg := config{domain: "bolha.us", host: "justmytoots.bolha.us", lang: "pt", instance: is.URL, baseURL: "https://justmytoots.bolha.us",
+	cfg := config{domain: "bolha.us", host: "mensagens.bolha.us", hosts: []string{"mensagens.bolha.us", "justmytoots.bolha.us"}, lang: "pt", instance: is.URL, baseURL: "https://mensagens.bolha.us",
 		clientID: "id", clientSecret: "secret", secret: []byte(strings.Repeat("k", 32))}
 	tmpl := template.Must(template.ParseFS(templateFS, "templates/*.html"))
 	s := newServer(cfg, tmpl, &http.Client{Timeout: time.Second})
@@ -300,7 +304,7 @@ func TestLoginShowsOwnPage(t *testing.T) {
 	if sess == nil {
 		t.Fatalf("no session, status %d", resp.StatusCode)
 	}
-	if _, body := get(t, ts.URL+"/", sess); !strings.Contains(body, "está ativa") || !strings.Contains(body, "https://justmytoots.bolha.us/@guto") {
+	if _, body := get(t, ts.URL+"/", sess); !strings.Contains(body, "está ativa") || !strings.Contains(body, "https://mensagens.bolha.us/@guto") {
 		t.Fatal(body)
 	}
 	inst.linked.Store(false)

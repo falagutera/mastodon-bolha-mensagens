@@ -3,6 +3,11 @@
 All notable changes to justmytoots. Versions follow [SemVer](https://semver.org/); images are
 published as `registry.gutocarvalho.net/images/justmytoots:<version>-<build>`.
 
+## 0.3.0 — 2026-11-13
+
+- **New address and name: mensagens.bolha.us, "Mensagens"** (same in PT and EN). The old address justmytoots.bolha.us redirects there.
+- **`JUSTMYTOOTS_LEGACY_HOSTS`**: old hosts, comma separated, whose profile links still count. Pages made with a link to justmytoots.bolha.us keep working; the "your link" box suggests the new address.
+
 ## 0.2.0 — 2026-11-08
 
 - **The bolha.io look**, from `open/gcn/ui` (`assets/style.css`, a synced copy, and `VISUAL.md`), like numeros, atualiza, id and encaminha: light and dark from the system, system fonts, a header with the bubble, cards on the home page, the filters and buttons as pills, and the footer "version · source code · part of bolha.io · based on JustMyToots". The IBM Plex webfonts and the artefatos stylesheet are gone.

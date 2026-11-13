@@ -1,6 +1,6 @@
 # justmytoots
 
-A clean, public page with the posts of an account of a Mastodon instance: **justmytoots.bolha.us**.
+A clean, public page with the posts of an account of a Mastodon instance: **mensagens.bolha.us** (Mensagens; the old address justmytoots.bolha.us redirects there, and profile links to it still count).
 
 It shows a person's own posts, without boosts, timelines or the rest of the interface, so they're easy to read, follow and share. Think jokes, drawings, photos, or anything worth looking back through. Only accounts of the instance have a page. To offer it on your instance, run your own.
 
@@ -17,9 +17,9 @@ It's a rewrite in Go of [JustMyToots](https://github.com/cookiemumbles/justmytoo
 
 ## Screenshot
 
-[![justmytoots rendering an account's posts](docs/screenshot.png)](https://justmytoots.bolha.us)
+[![justmytoots rendering an account's posts](docs/screenshot.png)](https://mensagens.bolha.us)
 
-*A live instance at [justmytoots.bolha.us](https://justmytoots.bolha.us): an account's own posts, no boosts, PT/EN.*
+*A live instance at [mensagens.bolha.us](https://mensagens.bolha.us): an account's own posts, no boosts, PT/EN.*
 
 ## Testing and security
 
@@ -143,6 +143,7 @@ What changed in each version is in [CHANGELOG.md](CHANGELOG.md), which the app a
 |---|---|---|---|
 | `JUSTMYTOOTS_INSTANCE` | yes |  | Your instance. Only its accounts have a page. |
 | `JUSTMYTOOTS_BASE_URL` | yes |  | Where this app is served, always https. |
+| `JUSTMYTOOTS_LEGACY_HOSTS` | no |  | Old hosts of this app, comma separated. Profile links to them still count, so a rename doesn't take pages down. |
 | `JUSTMYTOOTS_CLIENT_ID` | yes |  | OAuth application. |
 | `JUSTMYTOOTS_CLIENT_SECRET` | yes |  | OAuth application. |
 | `JUSTMYTOOTS_SECRET` | yes |  | Signs the session cookie. |

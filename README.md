@@ -6,6 +6,15 @@ It shows a person's own posts, without boosts, timelines or the rest of the inte
 
 It's a rewrite in Go of [JustMyToots](https://github.com/cookiemumbles/justmytoots.com) by cookiemumbles, see `NOTICE`.
 
+## Contents
+
+- [Screenshot](#screenshot)
+- [Testing and security](#testing-and-security)
+- [Architecture](#architecture)
+- [Install](#install)
+- [How it works](#how-it-works)
+- [Development](#development)
+
 ## Screenshot
 
 [![justmytoots rendering an account's posts](docs/screenshot.png)](https://justmytoots.bolha.us)

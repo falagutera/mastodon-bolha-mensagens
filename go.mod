@@ -1,4 +1,4 @@
-module gitlab.gutocarvalho.net/open/bolha/justmytoots
+module gitlab.gutocarvalho.net/open/bolha/mensagens
 
 go 1.26.0
 

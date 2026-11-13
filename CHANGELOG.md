@@ -1,7 +1,11 @@
 # Changelog
 
-All notable changes to justmytoots. Versions follow [SemVer](https://semver.org/); images are
+All notable changes to mensagens. Versions follow [SemVer](https://semver.org/); images are
 published as `registry.gutocarvalho.net/images/justmytoots:<version>-<build>`.
+
+## 0.3.1 — 2026-11-13
+
+- **The repository is now `open/bolha/mensagens`** (the old path `open/bolha/justmytoots` redirects), and the app calls itself mensagens in the footer, the release notes and the docs. Settings (`JUSTMYTOOTS_*`), the image (`images/justmytoots`) and the cookies keep their names.
 
 ## 0.3.0 — 2026-11-13
 

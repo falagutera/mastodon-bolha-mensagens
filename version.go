@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"strings"
 
-	"gitlab.gutocarvalho.net/open/bolha/justmytoots/internal/relnotes"
+	"gitlab.gutocarvalho.net/open/bolha/mensagens/internal/relnotes"
 )
 
 // The version is X.Y.Z-BUILD. X.Y.Z comes from the VERSION file, and CI sets

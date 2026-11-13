@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.gutocarvalho.net/open/bolha/justmytoots/internal/relnotes"
+	"gitlab.gutocarvalho.net/open/bolha/mensagens/internal/relnotes"
 )
 
 type filter string
@@ -97,7 +97,7 @@ func (s *server) routes() http.Handler {
 	mux.HandleFunc("POST /logout", s.handleLogout)
 	mux.HandleFunc("GET /{$}", s.handleIndex)
 	mux.HandleFunc("GET /release-notes", s.handleNotes)
-	mux.Handle("GET /release-notes.json", relnotes.JSONHandler("justmytoots", version, releases))
+	mux.Handle("GET /release-notes.json", relnotes.JSONHandler("mensagens", version, releases))
 	mux.HandleFunc("GET /{handle}", s.handleProfile)
 	return securityHeaders(mux)
 }

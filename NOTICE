@@ -1,3 +1,3 @@
-justmytoots is a rewrite in Go of JustMyToots (https://github.com/cookiemumbles/justmytoots.com),
+mensagens is a rewrite in Go of JustMyToots (https://github.com/cookiemumbles/justmytoots.com),
 by cookiemumbles, licensed under the Apache License 2.0. This rewrite is licensed under the
 GNU AGPL 3.0, see LICENSE.

@@ -1,4 +1,4 @@
-// justmytoots shows the posts of an account of a Mastodon instance on a clean
+// mensagens shows the posts of an account of a Mastodon instance on a clean
 // page, without boosts. See README.md.
 package main
 
@@ -58,7 +58,7 @@ func loadConfig() (config, error) {
 	c.domain = inst.Host
 	base, err := url.Parse(c.baseURL)
 	if err != nil || base.Host == "" {
-		return c, fmt.Errorf("JUSTMYTOOTS_BASE_URL must be a URL like https://justmytoots.example.social")
+		return c, fmt.Errorf("JUSTMYTOOTS_BASE_URL must be a URL like https://mensagens.example.social")
 	}
 	c.host = base.Host
 	c.hosts = []string{c.host}

@@ -1,4 +1,4 @@
-# justmytoots
+# mensagens
 
 A clean, public page with the posts of an account of a Mastodon instance: **mensagens.bolha.us** (Mensagens; the old address justmytoots.bolha.us redirects there, and profile links to it still count).
 
@@ -17,19 +17,19 @@ It's a rewrite in Go of [JustMyToots](https://github.com/cookiemumbles/justmytoo
 
 ## Screenshot
 
-[![justmytoots rendering an account's posts](docs/screenshot.png)](https://mensagens.bolha.us)
+[![mensagens rendering an account's posts](docs/screenshot.png)](https://mensagens.bolha.us)
 
 *A live instance at [mensagens.bolha.us](https://mensagens.bolha.us): an account's own posts, no boosts, PT/EN.*
 
 ## Testing and security
 
-justmytoots shows posts written by other people on a public page, so it is tested against what would hurt: a page for someone who didn't ask for one, a post that isn't public, and post HTML that could inject markup or script. What is done today (2026-11-08):
+mensagens shows posts written by other people on a public page, so it is tested against what would hurt: a page for someone who didn't ask for one, a post that isn't public, and post HTML that could inject markup or script. What is done today (2026-11-08):
 
 **Every pipeline.** GitLab CI ([`.gitlab-ci.yml`](.gitlab-ci.yml), plus the shared security stage from `open/gcn/ci-templates`, file `security.yml`). The test job runs on every pipeline; the security stage runs on every merge request and every push to `main`; the image is built and published only from `main`.
 
 - Blocking (the pipeline fails and no image is published):
   - `go vet`, a `gofmt` check, and the full test suite (no services needed: the tests use a fake instance);
-  - `govulncheck`: known vulnerabilities in Go code paths justmytoots actually reaches (in the test job and in the security stage);
+  - `govulncheck`: known vulnerabilities in Go code paths mensagens actually reaches (in the test job and in the security stage);
   - `gitleaks`: secrets committed to the repository;
   - `trivy`: critical vulnerabilities that have a fix, secrets and misconfigurations in the repository.
 - Informative (reported, not blocking): `semgrep`, `gosec`, `hadolint` (Dockerfile), `yamllint`, and `poutine` (security of the CI pipeline itself).
@@ -54,8 +54,8 @@ justmytoots shows posts written by other people on a public page, so it is teste
 
 **In plain words.**
 
-1. a person adds a link to `justmytoots.example.social/@name` in their bio or a profile field;
-2. when someone opens that page, justmytoots looks up the account on the instance's public API and checks that the link is there; without it, there is no page;
+1. a person adds a link to `mensagens.example.social/@name` in their bio or a profile field;
+2. when someone opens that page, mensagens looks up the account on the instance's public API and checks that the link is there; without it, there is no page;
 3. it reads the account's posts from the public API as an anonymous visitor, sanitizes their HTML again and shows them;
 4. signing in is optional and only shows a person whether their page is on and which link to add.
 
@@ -64,7 +64,7 @@ justmytoots shows posts written by other people on a public page, so it is teste
 ```
           browser
              |
-      justmytoots (this app, no JavaScript)
+      mensagens (this app, no JavaScript)
              |                         media and avatars load in the browser
              |                         straight from the instance (https)
              v
@@ -84,7 +84,7 @@ You need Docker. There is no database.
 
    ```sh
    curl -F client_name=justmytoots -F scopes=profile \
-     -F redirect_uris=https://justmytoots.example.social/auth/callback \
+     -F redirect_uris=https://mensagens.example.social/auth/callback \
      https://example.social/api/v1/apps
    ```
 
@@ -94,7 +94,7 @@ You need Docker. There is no database.
 
    ```ini
    JUSTMYTOOTS_INSTANCE=https://example.social
-   JUSTMYTOOTS_BASE_URL=https://justmytoots.example.social
+   JUSTMYTOOTS_BASE_URL=https://mensagens.example.social
    JUSTMYTOOTS_CLIENT_ID=the client_id from step 1
    JUSTMYTOOTS_CLIENT_SECRET=the client_secret from step 1
    JUSTMYTOOTS_SECRET=the output of: openssl rand -hex 32

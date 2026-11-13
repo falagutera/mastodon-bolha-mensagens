@@ -6,6 +6,12 @@ It shows a person's own posts, without boosts, timelines or the rest of the inte
 
 It's a rewrite in Go of [JustMyToots](https://github.com/cookiemumbles/justmytoots.com) by cookiemumbles, see `NOTICE`.
 
+## Screenshot
+
+[![justmytoots rendering an account's posts](docs/screenshot.png)](https://justmytoots.bolha.us)
+
+*A live instance at [justmytoots.bolha.us](https://justmytoots.bolha.us): an account's own posts, no boosts, PT/EN.*
+
 ## Testing and security
 
 justmytoots shows posts written by other people on a public page, so it is tested against what would hurt: a page for someone who didn't ask for one, a post that isn't public, and post HTML that could inject markup or script. What is done today (2026-11-08):
